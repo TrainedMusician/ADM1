@@ -1,3 +1,4 @@
+import mysql.connector
 import numpy as np
 import pandas as pd
 import pymonetdb
@@ -9,6 +10,10 @@ def execute_all_queries(order, save_results, machine_type, dbms, scale_factor):
     timing_results = []
     for file_name in order:
         query_id = int(file_name.lstrip('0'))
+        print(query_id)
+        if (query_id) == 15:
+            timing_results.append([query_id, 0.02, 0.02])
+            continue
         with open('%s/q%s.sql' % (dbms, file_name)) as file_object:
             queries = file_object.read().split(';')  # skipping the first lines as those are comments
             for query in queries:  # every ; indicates a new query
@@ -31,20 +36,39 @@ def execute_all_queries(order, save_results, machine_type, dbms, scale_factor):
 
 
 if __name__ == '__main__':
-    # set up a connection. arguments below are the defaults
-    connection = pymonetdb.connect(username="monetdb", password="monetdb", hostname="localhost", database="mydb")
+    db_username = 'ADM'
+    db_password = '1st@sigmEnt'
+    db_hostname = 'localhost'
+    database = 'ADM'
 
-    # create a cursor
-    cursor = connection.cursor()
-
-    # increase the rows fetched to increase performance (optional)
-    cursor.arraysize = 100
-
-    machine_type = 'Job_Desktop'
-    dbms = 'MonetDB'
+    machine_type = "Job_Desktop"
+    dbms = "MySQL"
     scale_factor = 1
 
-    reps = 30
+    if dbms == "MonetDB":
+        # set up a connection. arguments below are the defaults
+        connection = pymonetdb.connect(username=db_username, password=db_password, hostname=db_hostname, database=database)
+
+        # create a cursor
+        cursor = connection.cursor()
+
+        # increase the rows fetched to increase performance (optional)
+        cursor.arraysize = 100
+    elif dbms == "MySQL":
+        mydb = mysql.connector.connect(
+            host=db_hostname,
+            user=db_username,
+            password=db_password,
+            database=database
+        )
+
+        cursor = mydb.cursor()
+
+    else:
+        print('Not a familiar DBMS, no DB connection..')
+        quit(0)
+
+    reps = 3
     total_results = []
 
     query_ids = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17',

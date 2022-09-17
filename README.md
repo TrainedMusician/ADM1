@@ -8,6 +8,7 @@
 4. You've successfully loaded in the data :D
 
 Install pymonetdb
+https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04
 
 ## Run queries
 1. run `python analyzeData.py {test_system} {DBMS} {scale_factor}` from the `queries/` directory. This will create 22 result files in `results/{system}/{DBMS}/SF-{scale_factor}/`
