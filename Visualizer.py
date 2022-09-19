@@ -1,3 +1,6 @@
+import matplotlib
+
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import savgol_filter
@@ -77,3 +80,50 @@ def smooth(y, window, poly=1):
     y: vector to be smoothed
     window: size of the smoothing window """
     return savgol_filter(y, window, poly, mode='nearest')
+
+
+def time_fetcher(file_name, label):
+    data = np.load(file_name)
+    data = data[data[:, 0].argsort()]
+
+    data_per_query = np.split(data[:, 1], np.unique(data[:, 0], return_index=True)[1][1:])
+    query_times_mean, query_times_std = [], []
+    for i in range(len(data_per_query)):
+        query_times_mean.append(np.mean(data_per_query[i]))
+        query_times_std.append(np.std(data_per_query[i]))
+    return query_times_mean, query_times_std, label
+
+
+def dual_bar_plot(title, data_for_bars, x_axis, y_axis, legend, save_location):
+    ind = np.arange(len(data_for_bars[0][0]))  # the x locations for the groups
+    width = 0.35  # the width of the bars
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(ind - width / 2, data_for_bars[0][0], width, yerr=data_for_bars[0][1],
+                    label=data_for_bars[0][2])
+    rects2 = ax.bar(ind + width / 2, data_for_bars[1][0], width, yerr=data_for_bars[1][1],
+                    label=data_for_bars[1][2])
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_xlabel(x_axis)
+    ax.set_ylabel(y_axis)
+    ax.set_title(title)
+    ax.set_xticks(ind)
+    ax.set_xticklabels([str(i + 1) for i in ind])
+    if legend:
+        ax.legend()
+
+    fig.tight_layout()
+
+    plt.savefig(save_location) # save it in higher res when using it in the report
+    plt.show()
+
+
+if __name__ == '__main__':
+    dual_bar_plot('Runtime differences between MonetDB and MySQL',
+             [time_fetcher('results/binary_results/Job_Desktop_MonetDB_SF-1.npy', 'MonetDB'),
+              time_fetcher('results/binary_results/Job_Desktop_MySQL_SF-1.npy', 'MySQL')],
+             'Query',
+             'Time (s)',
+             True,
+             'results/plot.png')
