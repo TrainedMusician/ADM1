@@ -2,7 +2,7 @@
 -- using default substitutions
 
 
-create view revenue6 (supplier_no, total_revenue) as
+create view revenue1 (supplier_no, total_revenue) as
 	select
 		l_suppkey,
 		sum(l_extendedprice * (1 - l_discount))
@@ -23,16 +23,16 @@ select
 	total_revenue
 from
 	supplier,
-	revenue6
+	revenue1
 where
 	s_suppkey = supplier_no
 	and total_revenue = (
 		select
 			max(total_revenue)
 		from
-			revenue6
+			revenue1
 	)
 order by
 	s_suppkey;
 
-drop view revenue6;
+drop view revenue1;
