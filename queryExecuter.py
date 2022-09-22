@@ -4,17 +4,18 @@ import pandas as pd
 import pymonetdb
 import time
 import random
+import os
 
 
 def execute_all_queries(order, save_results, machine_type, dbms, scale_factor):
     timing_results = []
     for file_name in order:
         query_id = int(file_name.lstrip('0'))
-        print(query_id)
+        # print(query_id)
         if (query_id) == 15:
             timing_results.append([query_id, 0.02, 0.02])
             continue
-        with open('%s/q%s.sql' % (dbms, file_name)) as file_object:
+        with open('queries/%s/q%s.sql' % (dbms, file_name)) as file_object:
             queries = file_object.read().split(';')  # skipping the first lines as those are comments
             for query in queries:  # every ; indicates a new query
                 if query != '\n':
@@ -27,8 +28,11 @@ def execute_all_queries(order, save_results, machine_type, dbms, scale_factor):
                         fetch_time = time.time() - fetch_start_time
                         timing_results.append([query_id, query_time, fetch_time])
                         if save_results and len(results) > 0:
+                            directory_path = 'results/%s/%s/SF-%d/' % (machine_type, dbms, scale_factor)
+                            if not os.path.exists(directory_path):
+                                os.makedirs(directory_path)
                             pd.DataFrame(results, columns=[i[0] for i in cursor.description]).to_csv(
-                                '../results/%s/%s/SF-%d/q%d.out' % (machine_type, dbms, scale_factor, query_id), sep='|',
+                                '%sq%d.out' % (directory_path, query_id), sep='|',
                                 index=False)
                     except pymonetdb.exceptions.ProgrammingError:
                         continue
@@ -41,8 +45,8 @@ if __name__ == '__main__':
     db_hostname = 'localhost'
     database = 'ADM'
 
-    machine_type = "Job_Desktop"
-    dbms = "MySQL"
+    machine_type = "Job_M2"
+    dbms = "MonetDB"
     scale_factor = 1
 
     if dbms == "MonetDB":
@@ -68,7 +72,7 @@ if __name__ == '__main__':
         print('Not a familiar DBMS, no DB connection..')
         quit(0)
 
-    reps = 3
+    reps = 30
     total_results = []
 
     query_ids = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17',
@@ -80,4 +84,4 @@ if __name__ == '__main__':
         random.shuffle(query_ids)
         total_results.extend(execute_all_queries(query_ids, True if repetition == 0 else False, machine_type, dbms, scale_factor))
 
-    np.save('../results/binary_results/%s_%s_SF-%d' % (machine_type, dbms, scale_factor), total_results)
+    np.save('results/binary_results/%s_%s_SF-%d' % (machine_type, dbms, scale_factor), total_results)

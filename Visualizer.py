@@ -1,6 +1,8 @@
 import matplotlib
 
-matplotlib.use('Qt5Agg')
+# Use whatever works for your system
+# matplotlib.use('Qt5Agg')
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import savgol_filter
@@ -120,9 +122,9 @@ def dual_bar_plot(title, data_for_bars, x_axis, y_axis, legend, save_location):
 
 
 if __name__ == '__main__':
-    dual_bar_plot('Runtime differences between MonetDB and MySQL',
-             [time_fetcher('results/binary_results/Job_Desktop_MonetDB_SF-1.npy', 'MonetDB'),
-              time_fetcher('results/binary_results/Job_Desktop_MySQL_SF-1.npy', 'MySQL')],
+    dual_bar_plot('Runtime differences between Intel and Silicon (SF-1)',
+             [time_fetcher('results/binary_results/Job_Desktop_MonetDB_SF-1.npy', 'Intel i5'),
+              time_fetcher('results/binary_results/Job_M2_MonetDB_SF-1.npy', 'Apple Silicon M2')],
              'Query',
              'Time (s)',
              True,
