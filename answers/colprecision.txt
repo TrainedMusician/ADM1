@@ -20,4 +20,5 @@ sum
 str str
 str cnt
 num cnt sum
+str str sum sum sum sum avg avg avg cnt
 

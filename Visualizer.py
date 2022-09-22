@@ -96,15 +96,20 @@ def time_fetcher(file_name, label):
     return query_times_mean, query_times_std, label
 
 
-def dual_bar_plot(title, data_for_bars, x_axis, y_axis, legend, save_location):
+def bar_plot(title, data_for_bars, x_axis, y_axis, legend, save_location):
     ind = np.arange(len(data_for_bars[0][0]))  # the x locations for the groups
     width = 0.35  # the width of the bars
 
     fig, ax = plt.subplots()
     rects1 = ax.bar(ind - width / 2, data_for_bars[0][0], width, yerr=data_for_bars[0][1],
                     label=data_for_bars[0][2])
-    rects2 = ax.bar(ind + width / 2, data_for_bars[1][0], width, yerr=data_for_bars[1][1],
-                    label=data_for_bars[1][2])
+    # This is ugly code, apologies, but otherwise matplotlib won't accept it
+    if len(data_for_bars) > 1:
+        rects2 = ax.bar(ind + width / 2, data_for_bars[1][0], width, yerr=data_for_bars[1][1],
+                        label=data_for_bars[1][2])
+    if len(data_for_bars) > 2:
+        rects3 = ax.bar(ind + width / 2, data_for_bars[1][0], width, yerr=data_for_bars[1][1],
+                        label=data_for_bars[1][2])
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_xlabel(x_axis)
@@ -122,7 +127,7 @@ def dual_bar_plot(title, data_for_bars, x_axis, y_axis, legend, save_location):
 
 
 if __name__ == '__main__':
-    dual_bar_plot('Runtime differences between Intel and Silicon (SF-1)',
+    bar_plot('Runtime differences between Intel and Silicon (SF-1)',
              [time_fetcher('results/binary_results/Job_Desktop_MonetDB_SF-1.npy', 'Intel i5'),
               time_fetcher('results/binary_results/Job_M2_MonetDB_SF-1.npy', 'Apple Silicon M2')],
              'Query',

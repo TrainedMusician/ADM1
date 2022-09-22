@@ -1,3 +1,11 @@
+import matplotlib
+
+# Use whatever works for your system
+# matplotlib.use('Qt5Agg')
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+
+import filecmp
 import mysql.connector
 import numpy as np
 import pandas as pd
@@ -5,9 +13,10 @@ import pymonetdb
 import time
 import random
 import os
+from Visualizer import time_fetcher, bar_plot
 
 
-def execute_all_queries(order, save_results, machine_type, dbms, scale_factor):
+def execute_all_queries(cursor, order, save_results, machine_type, dbms, scale_factor):
     """
     This function iterates through the list of query-file-names (order).
     save_results is a Boolean which determines to save the results, this is only true on the first repetition for performance reasons
@@ -66,6 +75,28 @@ def open_connection(db_username, db_password, db_hostname, database):
         print('Not a familiar DBMS, no DB connection..')
         quit(0)
 
+def do_the_work(cursor, repetitions, machine_type, dbms, scale_factor):
+    # Don't touch
+    total_results = []
+    query_ids = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17',
+                 '18', '19', '20', '21', '22', '23']
+
+    for repetition in range(reps):
+        random.shuffle(query_ids)
+        total_results.extend(execute_all_queries(cursor, query_ids, True if repetition == 0 else False, machine_type, dbms, scale_factor))
+
+    np.save('results/binary_results/%s_%s_SF-%d' % (machine_type, dbms, scale_factor), total_results)
+
+
+def validate_results(machine_type, dbms, scale_factor):
+    # Run the perl script
+    os.system('bash answers/cmpall.sh %s %s %s > results/tmp.txt' % (machine_type, dbms, scale_factor))
+    # delete the logs, not needed
+    for i in range(23):
+        if os.path.exists('analysis_%d.log' % (i + 1)):
+            os.remove('analysis_%d.log' % (i + 1))
+    return filecmp.cmp('answers/curatedAnswers.txt', 'results/tmp.txt')
+
 
 if __name__ == '__main__':
     # Database variables
@@ -78,18 +109,22 @@ if __name__ == '__main__':
     machine_type = "Job_M2"
     dbms = "MonetDB"
     scale_factor = 1
-    reps = 30 # preferably 30, but you can decrease this during debugging
+    name_in_plot = "Apple M2"
+    reps = 30  # preferably 30, but you can decrease this during debugging
 
     # Create connection
-    cursor = open_connection(db_username, db_password, db_hostname, database)
+    # cursor = open_connection(db_username, db_password, db_hostname, database)
 
-    # Don't touch
-    total_results = []
-    query_ids = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17',
-                 '18', '19', '20', '21', '22', '23']
+    # do_the_work(cursor, reps, machine_type, dbms, scale_factor)
 
-    for repetition in range(reps):
-        random.shuffle(query_ids)
-        total_results.extend(execute_all_queries(query_ids, True if repetition == 0 else False, machine_type, dbms, scale_factor))
+    title = 'Results of %s performing on %dGB data with %s' % (dbms, scale_factor, name_in_plot)
 
-    np.save('results/binary_results/%s_%s_SF-%d' % (machine_type, dbms, scale_factor), total_results)
+    # If results vs answers aren't identical (compared through perl), notify the user
+    if not validate_results(machine_type, dbms, scale_factor):
+        title += ' INVALIDATED'
+
+    bar_plot(title, [time_fetcher('results/binary_results/%s_%s_SF-%d.npy' % (machine_type, dbms, scale_factor), name_in_plot)],
+             'Query',
+             'Time (s)',
+             True,
+             'results/plot.png')
