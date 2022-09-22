@@ -38,7 +38,7 @@
 - [ ] Apple M1, MySQL, 30GB
 - [ ] Apple M2, MonetDB, 1GB
 - [ ] Apple M2, MySQL, 1GB
-- [ ] Apple M2, MonetDB, 3GB
+- [x] Apple M2, MonetDB, 3GB
 - [ ] Apple M2, MySQL, 3GB
 - [ ] Apple M2, MonetDB, 10GB
 - [ ] Apple M2, MySQL, 10GB

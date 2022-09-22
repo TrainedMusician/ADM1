@@ -13,7 +13,7 @@ my @ColStartF2;
 my @ColEndF2;
 my $NumColF1;
 my $NumColF2;
-my $QueryColPrecisionFile="colprecision.txt";
+my $QueryColPrecisionFile="answers/colprecision.txt";
 my @ColStart;
 my @ColEnd;
 my $NumMismatch=0;
