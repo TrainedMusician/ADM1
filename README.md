@@ -5,8 +5,10 @@
 ### MonetDB (Ubuntu)
 1. Install [MonetDB](https://www.monetdb.org/easy-setup/) on your system and create a database
 2. Copy the data directory to the `/data/` on your system. Or edit the *absolute* paths in `setup/MonetDB/1-load_data.SF-1.sql`
-3. Connect to your newly created database and load the 3 files from `setup/MonetDB/` in ascending order
-4. You've successfully loaded in the data :D
+3. Create a new database called `ADM`
+4. Create a user with username: `ADM`, password: `1st@sigmEnt` (or change the credentials in queryExecuter.py)
+5. Connect to your newly created database and load the 3 files from `setup/MonetDB/` in ascending order
+6. You've successfully loaded in the data :D
 
 ### MySQL (Ubuntu)
 1. Follow the steps mentioned [here](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04)
