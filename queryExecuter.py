@@ -41,12 +41,11 @@ def execute_all_queries(cursor, order, save_results, machine_type, dbms, scale_f
                         fetch_time = time.time() - fetch_start_time
                         timing_results.append([query_id, query_time, fetch_time])
                         if save_results and len(results) > 0:
-                            directory_path = 'results/%s/%s/SF-%d/' % (machine_type, dbms, scale_factor)
+                            directory_path = os.path.join('results', machine_type, dbms, 'SF-%d' % scale_factor)
                             if not os.path.exists(directory_path):
                                 os.makedirs(directory_path)
                             pd.DataFrame(results, columns=[i[0] for i in cursor.description]).to_csv(
-                                '%sq%d.out' % (directory_path, query_id), sep='|',
-                                index=False)
+                                os.path.join(directory_path, 'q%d.out' % query_id), sep='|', index=False)
                     except pymonetdb.exceptions.ProgrammingError:
                         continue
     return timing_results
@@ -85,17 +84,17 @@ def do_the_work(cursor, repetitions, machine_type, dbms, scale_factor):
         random.shuffle(query_ids)
         total_results.extend(execute_all_queries(cursor, query_ids, True if repetition == 0 else False, machine_type, dbms, scale_factor))
 
-    np.save('results/binary_results/%s_%s_SF-%d' % (machine_type, dbms, scale_factor), total_results)
+    np.save(os.path.join('results', 'binary_results', '%s_%s_SF-%d' % (machine_type, dbms, scale_factor)), total_results)
 
 
 def validate_results(machine_type, dbms, scale_factor):
     # Run the perl script
-    os.system('bash answers/cmpall.sh %s %s %s > results/tmp.txt' % (machine_type, dbms, scale_factor))
+    os.system('bash %s %s %s %s > %s' % (os.path.join('answers', 'cmpall.sh'), machine_type, dbms, scale_factor, os.path.join('results', 'tmp.txt')))
     # delete the logs, not needed
     for i in range(23):
         if os.path.exists('analysis_%d.log' % (i + 1)):
             os.remove('analysis_%d.log' % (i + 1))
-    return filecmp.cmp('answers/curatedAnswers.txt', 'results/tmp.txt')
+    return filecmp.cmp(os.path.join('answers', 'curatedAnswers.txt'), os.path.join('results', 'tmp.txt'))
 
 
 if __name__ == '__main__':
@@ -106,16 +105,16 @@ if __name__ == '__main__':
     database = 'ADM'
 
     # Run variables
-    machine_type = "Job_M2"
+    machine_type = "Testing_Now"
     dbms = "MonetDB"
     scale_factor = 1
-    name_in_plot = "Apple M2"
+    name_in_plot = "LLLLLeo"
     reps = 30  # preferably 30, but you can decrease this during debugging
 
     # Create connection
-    # cursor = open_connection(db_username, db_password, db_hostname, database)
+    cursor = open_connection(db_username, db_password, db_hostname, database)
 
-    # do_the_work(cursor, reps, machine_type, dbms, scale_factor)
+    do_the_work(cursor, reps, machine_type, dbms, scale_factor)
 
     title = 'Results of %s performing on %dGB data with %s' % (dbms, scale_factor, name_in_plot)
 
@@ -123,8 +122,8 @@ if __name__ == '__main__':
     if not validate_results(machine_type, dbms, scale_factor):
         title += ' INVALIDATED'
 
-    bar_plot(title, [time_fetcher('results/binary_results/%s_%s_SF-%d.npy' % (machine_type, dbms, scale_factor), name_in_plot)],
+    bar_plot(title, [time_fetcher(os.path.join('results', 'binary_results', '%s_%s_SF-%d.npy' % (machine_type, dbms, scale_factor)), name_in_plot)],
              'Query',
              'Time (s)',
              True,
-             'results/plot.png')
+             os.path.join('results', 'plot.png'))
