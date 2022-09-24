@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     # If results vs answers aren't identical (compared through perl), notify the user
     if not validate_results(machine_type, dbms, scale_factor):
-        title += ' INVALIDATED'
+        title += '\nINVALIDATED!! results are not correct'
 
     bar_plot(title, [time_fetcher(os.path.join('results', 'binary_results', '%s_%s_SF-%d.npy' % (machine_type, dbms, scale_factor)), name_in_plot)],
              'Query',
