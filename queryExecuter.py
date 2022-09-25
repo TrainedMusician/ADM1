@@ -90,7 +90,7 @@ def do_the_work(cursor, repetitions, machine_type, dbms, scale_factor):
 def validate_results(machine_type, dbms, scale_factor):
     # Run the perl script
     os.system('bash %s %s %s %s > %s' % (os.path.join('answers', 'cmpall.sh'), machine_type, dbms, scale_factor, os.path.join('results', 'tmp.txt')))
-    files_identical = filecmp.cmp(os.path.join('answers', 'curatedAnswers.txt'), os.path.join('results', 'tmp.txt'))
+    files_identical = filecmp.cmp(os.path.join('answers', 'SF-%d' % scale_factor, 'curatedAnswers.txt'), os.path.join('results', 'tmp.txt'))
 
     if files_identical:
         # delete the logs, not if the answers are correct
@@ -114,10 +114,10 @@ if __name__ == '__main__':
     name_in_plot = "Intel i5"
     reps = 30  # preferably 30, but you can decrease this during debugging
 
-    # Create connection
-    cursor = open_connection(db_username, db_password, db_hostname, database)
-
-    do_the_work(cursor, reps, machine_type, dbms, scale_factor)
+    # # Create connection
+    # cursor = open_connection(db_username, db_password, db_hostname, database)
+    #
+    # do_the_work(cursor, reps, machine_type, dbms, scale_factor)
 
     title = 'Results of %s performing on %dGB data with %s' % (dbms, scale_factor, name_in_plot)
 

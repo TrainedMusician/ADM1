@@ -145,7 +145,7 @@ while (1){
                         $mismatch = $difference > 1 ? 1 : 0;} #column is a ratio and needs to match within 1 percent when reported to the nearest 1/100th, rounded up
         else           {print LOG "Don't know how to compare type @QueryColPrecision[$col]\n";exit;}     # default
     }
-    #print "$mismatch $difference\n"; 
+    #print "$mismatch $difference\n";
     if ($mismatch == 1) {
       $NumMismatch++;
       if (@QueryColPrecision[$col]=~"str"){
