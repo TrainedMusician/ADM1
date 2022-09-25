@@ -108,10 +108,10 @@ if __name__ == '__main__':
     database = 'ADM'
 
     # Run variables
-    machine_type = "Testing_Now"
+    machine_type = "Job_Desktop"
     dbms = "MonetDB"
-    scale_factor = 1
-    name_in_plot = "LLLLLeo"
+    scale_factor = 3
+    name_in_plot = "Intel i5"
     reps = 30  # preferably 30, but you can decrease this during debugging
 
     # Create connection

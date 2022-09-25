@@ -29,11 +29,11 @@ def process_data(df):
 
 if __name__ == '__main__':
     query_id = 1
+    scale_factor = 1
     old_file = os.path.join('data', 'lineitem.tbl')
     new_file = os.path.join('data', 'jobbert.tbl')
-    # output_file = os.path.join('answers', 'analysis_%d.log' % query_id)
     verification_script = os.path.join('answers', 'cmpq.pl')
-    correct_output = os.path.join('answers', 'query_outputs',
+    correct_output = os.path.join('answers', 'SF-' % scale_factor,
                                   'q%d.out' % query_id)
     tmp_file = os.path.join('results', 'customQ1tmp.txt')
     comparison_file = os.path.join('results', 'comparison_tmp.txt')
