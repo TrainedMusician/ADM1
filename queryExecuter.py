@@ -92,7 +92,7 @@ def validate_results(machine_type, dbms, scale_factor):
     os.system('bash %s %s %s %s > %s' % (os.path.join('answers', 'cmpall.sh'), machine_type, dbms, scale_factor, os.path.join('results', 'tmp.txt')))
     files_identical = filecmp.cmp(os.path.join('answers', 'curatedAnswers.txt'), os.path.join('results', 'tmp.txt'))
 
-    if not files_identical:
+    if files_identical:
         # delete the logs, not if the answers are correct
         for i in range(23):
             if os.path.exists('analysis_%d.log' % (i + 1)):
