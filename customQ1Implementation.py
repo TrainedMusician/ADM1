@@ -1,16 +1,18 @@
-import filecmp
+from datetime import datetime, timedelta
 import pandas as pd
 import os
+from time import time
 
 
 def load_data(file_name):
     """This function simply loads the lineitem file, it uses the modified file
     which offers a speed boost by only loading the 6 columns
     Returns a pandas DataFrame"""
-    columns = ['l_returnflag', 'l_linestatus', 'l_quantity', 'l_extendedprice',
-               'l_discount', 'l_tax']
-    return pd.read_csv(file_name, sep="|", skipinitialspace=True,
-                       usecols=columns)
+    columns = ['l_shipdate', 'l_returnflag', 'l_linestatus', 'l_quantity',
+               'l_extendedprice', 'l_discount', 'l_tax']
+    tmp = pd.read_csv(file_name, sep="|", skipinitialspace=True,
+                      usecols=columns)
+    return tmp[pd.DatetimeIndex(tmp['l_shipdate']) <= datetime.strptime('1998-12-01', '%Y-%m-%d') - timedelta(days=90)]
 
 
 def process_data(df):
@@ -33,14 +35,19 @@ if __name__ == '__main__':
     comparison_file = os.path.join('results', 'comparison_tmp.txt')
 
     print('Adding the columns..')
+    data_preparation = time()
     os.system('bash addColumns.sh %s %s' % (old_file, new_file))
     # using sed would be faster! But not guaranteed to work on all systems...
+    data_preparation = time() - data_preparation
 
     print('Loading data..', end='\t\t')
+    data_loading = time()
     data = load_data(new_file)
     os.remove(new_file)  # remove file after loading it in memory
+    data_loading = time() - data_loading
 
     print('Done!\nProcessing data..')
+    data_processing = time()
     grouped_by = data.groupby(
         by=['l_returnflag', 'l_linestatus'])
     result = grouped_by.agg(
@@ -54,16 +61,23 @@ if __name__ == '__main__':
 
     result['sum_disc_price'], result['sum_charge'] = zip(
         *grouped_by.apply(process_data))
+    data_processing = time() - data_processing
 
     result[['sum_qty', 'sum_base_price', 'sum_disc_price', 'sum_charge',
             'avg_qty', 'avg_price', 'avg_disc',
             'count_order']].to_csv(tmp_file, sep='|', index=True)
     print('Result is saved in %s, verifying it' % tmp_file)
 
+    data_verification = time()
     os.system('%s %d %s %s > %s' % (
         verification_script, query_id, correct_output, tmp_file, comparison_file))
+    data_verification = time() - data_verification
 
     with open(comparison_file) as file_object:
-        print(file_object.read())
-        print('This is because I still need to add the WHERE filter.. Will do this tomorrow!')
-    #     if file_object.read() == 'Query 1 0 unacceptable missmatches':
+        # print(file_object.read())
+        if file_object.read() == 'Query 1 0 unacceptable missmatches\n':
+            print('Successfully executed query \t%d' % query_id)
+            print('Data preparation time:\t\t\t%.5f seconds' % data_preparation)
+            print('Data loading time:\t\t\t\t%.5f seconds' % data_loading)
+            print('Data processing time:\t\t\t%.5f seconds' % data_processing)
+            print('Data verification time:\t\t\t%.5f seconds' % data_verification)
