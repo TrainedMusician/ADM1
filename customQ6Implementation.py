@@ -12,8 +12,8 @@ def load_data(file_name):
     tmp = pd.read_csv(file_name, sep="|", skipinitialspace=True,
                       usecols=columns)
     mask = (pd.DatetimeIndex(tmp['l_shipdate']) >= datetime.strptime('1994-01-01', '%Y-%m-%d')) & \
-        (pd.DatetimeIndex(tmp['l_shipdate']) < datetime.strptime('1994-01-01', '%Y-%m-%d') + timedelta(days=365.2425)) & \
-        (tmp['l_discount'].between(0.059, 0.061)) & (tmp['l_quantity'] < 24)
+        (pd.DatetimeIndex(tmp['l_shipdate']) < datetime.strptime('1994-01-01', '%Y-%m-%d') + timedelta(days=364.2425)) & \
+        (tmp['l_discount'].between(0.05, 0.07)) & (tmp['l_quantity'] < 24)
     return tmp[mask]
 
 
@@ -48,19 +48,11 @@ if __name__ == '__main__':
 
     print('Done!\nProcessing data..')
     data_processing = time()
+    revenue = (data['l_extendedprice'] * data['l_discount']).sum()
+    data_processing = time() - data_processing
     with open(tmp_file, 'w') as file_object:
         file_object.write('revenue\n')
-        file_object.write(str((data['l_extendedprice'] * data['l_discount']).sum()))
-    # print(data.apply(process_data, axis=1))
-    # df = pd.DataFrame(data.size())
-    # df['sum_qty'], df['sum_base_price'], df['sum_disc_price'], df[
-    #     'sum_charge'], df['avg_qty'], df['avg_price'], df['avg_disc'], df[
-    #     'count_order'] = zip(*grouped_by.apply(process_data))
-    # data_processing = time() - data_processing
-    #
-    # df[['sum_qty', 'sum_base_price', 'sum_disc_price', 'sum_charge',
-    #         'avg_qty', 'avg_price', 'avg_disc',
-    #         'count_order']].to_csv(tmp_file, sep='|', index=True)
+        file_object.write(str(revenue))
     print('Result is saved in %s, verifying it' % tmp_file)
 
     data_verification = time()
@@ -69,7 +61,7 @@ if __name__ == '__main__':
     data_verification = time() - data_verification
 
     with open(comparison_file) as file_object:
-        if file_object.read() == 'Query 1 0 unacceptable missmatches\n':
+        if file_object.read() == 'Query 6 0 unacceptable missmatches\n':
             print('Successfully executed query \t%d' % query_id)
             print('Data preparation time:\t\t\t%.5f seconds' % data_preparation)
             print('Data loading time:\t\t\t\t%.5f seconds' % data_loading)
