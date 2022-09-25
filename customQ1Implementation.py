@@ -86,3 +86,5 @@ if __name__ == '__main__':
             print('Data loading time:\t\t\t\t%.5f seconds' % data_loading)
             print('Data processing time:\t\t\t%.5f seconds' % data_processing)
             print('Data verification time:\t\t\t%.5f seconds' % data_verification)
+        else:
+            print('There is something going wrong, I have wrong results...')
