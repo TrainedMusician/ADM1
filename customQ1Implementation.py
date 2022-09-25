@@ -16,11 +16,15 @@ def load_data(file_name):
 
 
 def process_data(df):
-    """This function calculates the 'difficult' two aggregations"""
+    """This function calculates the aggregations,
+    including the 'difficult' ones"""
     e = df['l_extendedprice']
     d = df['l_discount']
     t = df['l_tax']
-    return (e * (1 - d)).sum(), (e * (1 - d) * (1 + t)).sum()
+    q = df['l_quantity']
+    return q.sum(), e.sum(), (e * (1 - d)).sum(), \
+           (e * (1 - d) * (1 + t)).sum(), q.mean(), e.mean(), d.mean(), \
+           q.size
 
 
 if __name__ == '__main__':
@@ -50,20 +54,22 @@ if __name__ == '__main__':
     data_processing = time()
     grouped_by = data.groupby(
         by=['l_returnflag', 'l_linestatus'])
-    result = grouped_by.agg(
-        sum_qty=('l_quantity', 'sum'),
-        sum_base_price=('l_extendedprice', 'sum'),
-        avg_qty=('l_quantity', 'mean'),
-        avg_price=('l_extendedprice', 'mean'),
-        avg_disc=('l_discount', 'mean'),
-        count_order=('l_discount', 'size')
-    )
-
-    result['sum_disc_price'], result['sum_charge'] = zip(
-        *grouped_by.apply(process_data))
+    # result = grouped_by.agg(
+    #     sum_qty=('l_quantity', 'sum'),
+    #     sum_base_price=('l_extendedprice', 'sum'),
+    #     avg_qty=('l_quantity', 'mean'),
+    #     avg_price=('l_extendedprice', 'mean'),
+    #     avg_disc=('l_discount', 'mean'),
+    #     count_order=('l_discount', 'size')
+    # )
+    #
+    df = pd.DataFrame(grouped_by.size())
+    df['sum_qty'], df['sum_base_price'], df['sum_disc_price'], df[
+        'sum_charge'], df['avg_qty'], df['avg_price'], df['avg_disc'], df[
+        'count_order'] = zip(*grouped_by.apply(process_data))
     data_processing = time() - data_processing
 
-    result[['sum_qty', 'sum_base_price', 'sum_disc_price', 'sum_charge',
+    df[['sum_qty', 'sum_base_price', 'sum_disc_price', 'sum_charge',
             'avg_qty', 'avg_price', 'avg_disc',
             'count_order']].to_csv(tmp_file, sep='|', index=True)
     print('Result is saved in %s, verifying it' % tmp_file)
@@ -74,7 +80,6 @@ if __name__ == '__main__':
     data_verification = time() - data_verification
 
     with open(comparison_file) as file_object:
-        # print(file_object.read())
         if file_object.read() == 'Query 1 0 unacceptable missmatches\n':
             print('Successfully executed query \t%d' % query_id)
             print('Data preparation time:\t\t\t%.5f seconds' % data_preparation)
