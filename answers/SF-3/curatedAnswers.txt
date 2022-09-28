@@ -13,7 +13,7 @@ Query 12 0 unacceptable missmatches
 Query 13 0 unacceptable missmatches
 Query 14 0 unacceptable missmatches
 Query 16 0 unacceptable missmatches
-Query 17 0 unacceptable missmatches
+Query 17 1 unacceptable missmatches
 Query 18 0 unacceptable missmatches
 Query 19 0 unacceptable missmatches
 Query 20 0 unacceptable missmatches
