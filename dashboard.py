@@ -9,7 +9,8 @@ import os
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 binary_files_list = os.listdir('results/binary_results/')
-binary_files = pd.DataFrame(os.listdir('results/binary_results/'))
+binary_files_list.sort()
+binary_files = pd.DataFrame(binary_files_list)
 
 app.layout = html.Div(children=[
     html.H1('ADM 1 Dashboard'),
@@ -36,6 +37,7 @@ def update_bar_chart(selected_rows):
     if selected_rows is None:
         return px.bar()
 
+    selected_rows.sort()
     data = [list(range(1, 23))]
     dt_columns = ['query_id']
 
