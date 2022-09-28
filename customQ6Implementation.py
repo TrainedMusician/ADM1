@@ -30,7 +30,7 @@ if __name__ == '__main__':
     old_file = os.path.join('data', 'lineitem.tbl')
     new_file = os.path.join('data', 'jobbert.tbl')
     verification_script = os.path.join('answers', 'cmpq.pl')
-    correct_output = os.path.join('answers', 'SF-' % scale_factor,
+    correct_output = os.path.join('answers', 'SF-%d' % scale_factor,
                                   'q%d.out' % query_id)
     tmp_file = os.path.join('results', 'customQ6tmp.txt')
     comparison_file = os.path.join('results', 'comparison_tmp.txt')
