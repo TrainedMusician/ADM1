@@ -91,6 +91,8 @@ def time_fetcher(file_name, label):
     data_per_query = np.split(data[:, 1], np.unique(data[:, 0], return_index=True)[1][1:])
     query_times_mean, query_times_std = [], []
     for i in range(len(data_per_query)):
+        if i == 22:
+            break
         query_times_mean.append(np.mean(data_per_query[i]))
         query_times_std.append(np.std(data_per_query[i]))
     return query_times_mean, query_times_std, label
@@ -117,20 +119,22 @@ def bar_plot(title, data_for_bars, x_axis, y_axis, legend, save_location):
     ax.set_title(title)
     ax.set_xticks(ind)
     ax.set_xticklabels([str(i + 1) for i in ind])
+    ax.set_yscale('log')
     if legend:
         ax.legend()
 
     fig.tight_layout()
 
-    plt.savefig(save_location) # save it in higher res when using it in the report
-    plt.show()
+    plt.savefig(save_location, dpi=10)
+    # plt.savefig(save_location, dpi=1000)
+    # plt.show()
 
 
 if __name__ == '__main__':
-    bar_plot('Runtime differences between Intel and Silicon (SF-1)',
-             [time_fetcher('results/binary_results/Job_Desktop_MonetDB_SF-1.npy', 'Intel i5'),
-              time_fetcher('results/binary_results/Job_M2_MonetDB_SF-1.npy', 'Apple Silicon M2')],
-             'Query',
+    bar_plot('Runtime differences between MySQL on Intel i5 and i7 (SF-1)',
+             [time_fetcher('results/binary_results/Job_Desktop_MySQL_SF-1.npy', 'Intel i5'),
+              time_fetcher('results/binary_results/Vicent_i7_MySQL_SF-1.npy', 'Intel i7')],
+             'Query ID',
              'Time (s)',
              True,
              'results/plot.png')
