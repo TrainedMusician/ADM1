@@ -16,13 +16,3 @@ ALTER TABLE lineitem ADD CONSTRAINT lineitem_orderkey    FOREIGN KEY (l_orderkey
 ALTER TABLE lineitem ADD CONSTRAINT lineitem_partkey     FOREIGN KEY (l_partkey)               REFERENCES part     (p_partkey)             ;
 ALTER TABLE lineitem ADD CONSTRAINT lineitem_suppkey     FOREIGN KEY (l_suppkey)               REFERENCES supplier (s_suppkey)             ;
 ALTER TABLE lineitem ADD CONSTRAINT lineitem_partsuppkey FOREIGN KEY (l_partkey,l_suppkey)     REFERENCES partsupp (ps_partkey,ps_suppkey) ;
-
-
-
-
-TRUNCATE TABLE nation;
-LOAD DATA INFILE '/var/lib/mysql-files/nation.tbl' INTO TABLE nation FIELDS TERMINATED BY '|' LINES TERMINATED BY '\n';
-ALTER TABLE nation   ADD CONSTRAINT nationkey            PRIMARY KEY (n_nationkey)                                                         ;
-ALTER TABLE nation   ADD CONSTRAINT nation_regionkey     FOREIGN KEY (n_regionkey)             REFERENCES region   (r_regionkey)           ;
-ALTER TABLE supplier ADD CONSTRAINT supplier_nationkey   FOREIGN KEY (s_nationkey)             REFERENCES nation   (n_nationkey)           ;
-ALTER TABLE customer ADD CONSTRAINT customer_nationkey   FOREIGN KEY (c_nationkey)             REFERENCES nation   (n_nationkey)           ;
