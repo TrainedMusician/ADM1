@@ -110,8 +110,11 @@ def bar_plot(title, data_for_bars, x_axis, y_axis, legend, save_location):
         rects2 = ax.bar(ind + width / 2, data_for_bars[1][0], width, yerr=data_for_bars[1][1],
                         label=data_for_bars[1][2])
     if len(data_for_bars) > 2:
-        rects3 = ax.bar(ind + width / 2, data_for_bars[1][0], width, yerr=data_for_bars[1][1],
-                        label=data_for_bars[1][2])
+        rects3 = ax.bar(ind + width / 2, data_for_bars[2][0], width, yerr=data_for_bars[2][1],
+                        label=data_for_bars[2][2])
+    if len(data_for_bars) > 3:
+        rects3 = ax.bar(ind + width / 2, data_for_bars[3][0], width, yerr=data_for_bars[3][1],
+                        label=data_for_bars[3][2])
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_xlabel(x_axis)
@@ -125,16 +128,16 @@ def bar_plot(title, data_for_bars, x_axis, y_axis, legend, save_location):
 
     fig.tight_layout()
 
-    plt.savefig(save_location, dpi=10)
-    # plt.savefig(save_location, dpi=1000)
+    # plt.savefig(save_location, dpi=10)
+    plt.savefig(save_location, dpi=1000)
     # plt.show()
 
 
 if __name__ == '__main__':
-    bar_plot('Runtime differences between MySQL on Intel i5 and i7 (SF-1)',
-             [time_fetcher('results/binary_results/Job_Desktop_MySQL_SF-1.npy', 'Intel i5'),
-              time_fetcher('results/binary_results/Vicent_i7_MySQL_SF-1.npy', 'Intel i7')],
+    bar_plot('Runtimes of MonetDB and MySQL on Intel i5 (SF-1)',
+             [time_fetcher('results/binary_results/Job_Desktop_MonetDB_SF-1.npy', 'MonetDB'),
+              time_fetcher('results/binary_results/Job_Desktop_MySQL_SF-1.npy', 'MySQL')],
              'Query ID',
              'Time (s)',
              True,
-             'results/plot.png')
+             'results/MonetDB_MySQL.png')

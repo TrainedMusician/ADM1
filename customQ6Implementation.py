@@ -9,8 +9,7 @@ def load_data(file_name):
     which offers a speed boost by only loading the 6 columns
     Returns a pandas DataFrame"""
     columns = ['l_shipdate', 'l_extendedprice', 'l_discount', 'l_quantity']
-    tmp = pd.read_csv(file_name, sep="|", skipinitialspace=True,
-                      usecols=columns)
+    tmp = pd.read_csv(file_name, sep="|", skipinitialspace=True, usecols=columns)
     mask = (pd.DatetimeIndex(tmp['l_shipdate']) >= datetime.strptime('1994-01-01', '%Y-%m-%d')) & \
         (pd.DatetimeIndex(tmp['l_shipdate']) < datetime.strptime('1994-01-01', '%Y-%m-%d') + timedelta(days=364.2425)) & \
         (tmp['l_discount'].between(0.05, 0.07)) & (tmp['l_quantity'] < 24)

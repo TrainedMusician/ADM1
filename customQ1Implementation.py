@@ -10,8 +10,7 @@ def load_data(file_name):
     Returns a pandas DataFrame"""
     columns = ['l_shipdate', 'l_returnflag', 'l_linestatus', 'l_quantity',
                'l_extendedprice', 'l_discount', 'l_tax']
-    tmp = pd.read_csv(file_name, sep="|", skipinitialspace=True,
-                      usecols=columns)
+    tmp = pd.read_csv(file_name, sep="|", skipinitialspace=True, usecols=columns)
     return tmp[pd.DatetimeIndex(tmp['l_shipdate']) <= datetime.strptime('1998-12-01', '%Y-%m-%d') - timedelta(days=90)]
 
 
@@ -33,7 +32,7 @@ if __name__ == '__main__':
     old_file = os.path.join('data', 'lineitem.tbl')
     new_file = os.path.join('data', 'jobbert.tbl')
     verification_script = os.path.join('answers', 'cmpq.pl')
-    correct_output = os.path.join('answers', 'SF-' % scale_factor,
+    correct_output = os.path.join('answers', 'SF-%d' % scale_factor,
                                   'q%d.out' % query_id)
     tmp_file = os.path.join('results', 'customQ1tmp.txt')
     comparison_file = os.path.join('results', 'comparison_tmp.txt')
@@ -54,15 +53,7 @@ if __name__ == '__main__':
     data_processing = time()
     grouped_by = data.groupby(
         by=['l_returnflag', 'l_linestatus'])
-    # result = grouped_by.agg(
-    #     sum_qty=('l_quantity', 'sum'),
-    #     sum_base_price=('l_extendedprice', 'sum'),
-    #     avg_qty=('l_quantity', 'mean'),
-    #     avg_price=('l_extendedprice', 'mean'),
-    #     avg_disc=('l_discount', 'mean'),
-    #     count_order=('l_discount', 'size')
-    # )
-    #
+
     df = pd.DataFrame(grouped_by.size())
     df['sum_qty'], df['sum_base_price'], df['sum_disc_price'], df[
         'sum_charge'], df['avg_qty'], df['avg_price'], df['avg_disc'], df[
