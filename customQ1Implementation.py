@@ -53,15 +53,7 @@ if __name__ == '__main__':
     data_processing = time()
     grouped_by = data.groupby(
         by=['l_returnflag', 'l_linestatus'])
-    # result = grouped_by.agg(
-    #     sum_qty=('l_quantity', 'sum'),
-    #     sum_base_price=('l_extendedprice', 'sum'),
-    #     avg_qty=('l_quantity', 'mean'),
-    #     avg_price=('l_extendedprice', 'mean'),
-    #     avg_disc=('l_discount', 'mean'),
-    #     count_order=('l_discount', 'size')
-    # )
-    #
+
     df = pd.DataFrame(grouped_by.size())
     df['sum_qty'], df['sum_base_price'], df['sum_disc_price'], df[
         'sum_charge'], df['avg_qty'], df['avg_price'], df['avg_disc'], df[

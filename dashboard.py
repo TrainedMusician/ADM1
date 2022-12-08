@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from dash import Dash, dcc, html, dash_table
 from dash.dependencies import Input, Output
+import dash_daq as daq
 import dash_bootstrap_components as dbc
 import os
 
@@ -11,6 +12,10 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 binary_files_list = os.listdir('results/binary_results/')
 binary_files_list.sort()
 binary_files = pd.DataFrame(binary_files_list)
+data_q1 = pd.read_csv('results/q1.csv')
+data_q6 = pd.read_csv('results/q6.csv')
+fig_q1 = px.bar(data_q1, x='Machine', y='Time (s)', color='Process', title='Q1 Implementation')
+fig_q6 = px.bar(data_q6, x='Machine', y='Time (s)', color='Process', title='Q6 Implementation (Python & R)')
 
 app.layout = html.Div(children=[
     html.H1('ADM 1 Dashboard'),
@@ -25,19 +30,28 @@ app.layout = html.Div(children=[
         page_current=0,
         page_size=10,
     ),
+    daq.ToggleSwitch(
+        id='main_log',
+        value=False,
+        label='Log10 Y-axis',
+        labelPosition='top'
+    ),
     dcc.Graph(id="main_plot"),
+    dcc.Graph(figure=fig_q1),
+    dcc.Graph(figure=fig_q6),
 ])
 
 
 @app.callback(
     Output("main_plot", "figure"),
-    Input('selectionTable', 'derived_virtual_selected_rows')
+    Input('selectionTable', 'derived_virtual_selected_rows'),
+    Input('main_log', 'value')
 )
-def update_bar_chart(selected_rows):
+def update_bar_chart(selected_rows, log_active):
     if selected_rows is None:
         return px.bar()
 
-    selected_rows.sort()
+    # selected_rows.sort()
     data = [list(range(1, 23))]
     dt_columns = ['query_id']
 
@@ -57,11 +71,15 @@ def update_bar_chart(selected_rows):
 
     data = pd.DataFrame(np.array(data).T, columns=dt_columns)
 
-    fig = px.bar(data, x="query_id", y=dt_columns[1:], barmode="group")
+    y_axis = "Time (seconds)"
+    if log_active:
+        y_axis += ' log10 scale'
+
+    fig = px.bar(data, x="query_id", y=dt_columns[1:], barmode="group", log_y=log_active)
     fig.update_layout(
         title="Query Execution Time",
         xaxis_title="Query ID",
-        yaxis_title="Time (seconds)",
+        yaxis_title=y_axis,
         hovermode='x',
     )
     return fig

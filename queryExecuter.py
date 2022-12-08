@@ -63,13 +63,13 @@ def open_connection(db_username, db_password, db_hostname, database):
         cursor.arraysize = 100
         return connection, cursor
     elif dbms == "MySQL":
-        connection = mysql.connector.connect(
+        mydb = mysql.connector.connect(
             host=db_hostname,
             user=db_username,
             password=db_password,
             database=database
         )
-        return connection, mydb.cursor()
+        return mydb, mydb.cursor()
     else:
         print('Not a familiar DBMS, no DB connection..')
         quit(0)
@@ -108,15 +108,15 @@ if __name__ == '__main__':
     database = 'ADM'
 
     # Run variables
-    machine_type = "Job_M2"
+    machine_type = "Job_Desktop"
     dbms = "MonetDB"
     scale_factor = 3
-    name_in_plot = "Apple M2"
+    name_in_plot = "Intel i5"
     reps = 30  # preferably 30, but you can decrease this during debugging
 
     # Create connection
     connection, cursor = open_connection(db_username, db_password, db_hostname, database)
-
+    #
     do_the_work(cursor, reps, machine_type, dbms, scale_factor)
 
     title = 'Results of %s performing on %dGB data with %s' % (dbms, scale_factor, name_in_plot)
