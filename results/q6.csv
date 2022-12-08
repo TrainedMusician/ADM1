@@ -1,0 +1,41 @@
+,Machine,Process,Time (s)
+0,M2 SF-1,Preparing,0.46566
+1,M2 SF-1,Loading,3.49726
+2,M2 SF-1,Processing,0.00096
+3,M2 SF-1,Verifying,0.01855
+4,M2 SF-1 Without Column Names,Preparing,0.0
+5,M2 SF-1 Without Column Names,Loading,7.3471
+6,M2 SF-1 Without Column Names,Processing,0.00079
+7,M2 SF-1 Without Column Names,Verifying,0.01875
+8,i5 SF-1,Preparing,0.48938
+9,i5 SF-1,Loading,5.5987
+10,i5 SF-1,Processing,0.00072
+11,i5 SF-1,Verifying,0.00303
+12,i5 SF-1 Without Column Names,Preparing,0.0
+13,i5 SF-1 Without Column Names,Loading,11.73442
+14,i5 SF-1 Without Column Names,Processing,0.00073
+15,i5 SF-1 Without Column Names,Verifying,0.00296
+16,M2 R SF-1,Preparing,0.543
+17,M2 R SF-1,Loading,3.186
+18,M2 R SF-1,Processing,0.08283363
+19,M2 R SF-1,Verifying,0.00347
+20,M2 R SF-3,Preparing,1.602
+21,M2 R SF-3,Loading,9.64
+22,M2 R SF-3,Processing,0.2494444
+23,M2 R SF-3,Verifying,0.02915
+24,M2 SF-3,Preparing,1.51774
+25,M2 SF-3,Loading,9.74576
+26,M2 SF-3,Processing,0.00089
+27,M2 SF-3,Verifying,0.01037
+28,M2 SF-3 Without Column Names,Preparing,0.0
+29,M2 SF-3 Without Column Names,Loading,23.44947
+30,M2 SF-3 Without Column Names,Processing,0.00364
+31,M2 SF-3 Without Column Names,Verifying,0.02913
+32,i5 SF-3,Preparing,2.42383
+33,i5 SF-3,Loading,16.71707
+34,i5 SF-3,Processing,0.00133
+35,i5 SF-3,Verifying,0.00298
+36,i5 SF-3 Without Column Names,Preparing,0.0
+37,i5 SF-3 Without Column Names,Loading,37.3617
+38,i5 SF-3 Without Column Names,Processing,0.00151
+39,i5 SF-3 Without Column Names,Verifying,0.0187
