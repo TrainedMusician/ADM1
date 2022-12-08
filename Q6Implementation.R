@@ -6,7 +6,7 @@ setwd('gitRepos/adm1/')
 oldFile <- 'data/lineitem.tbl'
 newFile <- 'data/jobbert.tbl'
 
-system(paste('bash addColumns.sh', oldFile, newFile))
+system.time(system(paste('bash addColumns.sh', oldFile, newFile)))
 
 # # Q1
 # columnsWithClasses <- list(
@@ -27,5 +27,5 @@ columnsWithClasses <- list(
 			 'l_comment', 'V17', 'l_returnflag', 'l_linestatus', 'l_tax')
 )
 
-dt <- fread(newFile, sep = '|', colClasses = columnsWithClasses, header = TRUE)
+system.time(dt <- fread(newFile, sep = '|', colClasses = columnsWithClasses, header = TRUE))
 microbenchmark(sum(dt[l_shipdate %between% c('1994-01-01', '1994-12-12') & l_discount %between% c(.05, .07) & l_quantity < 24, l_quantity * l_extendedprice]), unit = 's')
